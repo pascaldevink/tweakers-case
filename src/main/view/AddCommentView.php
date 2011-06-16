@@ -6,8 +6,8 @@
 <body>
     <div class="container">
         <form action="/addcommentsave.php" method="post">
-            <input type="hidden" name="articleId" id="articleId" value="<?php echo $articleId; ?>">
-            <input type="hidden" name="parentId" id="parentId" value="<?php echo $parentId; ?>">
+            <input type="hidden" name="articleId" id="articleId" value="<?php echo $modelAndView->articleId; ?>">
+            <input type="hidden" name="parentId" id="parentId" value="<?php echo $modelAndView->parentId; ?>">
 
             <label for="user">Gebruikersnaam: </label>
             <input type="text" name="user" id="user"><br />

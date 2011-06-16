@@ -39,7 +39,18 @@ class Bootstrapper
         $request = new Request();
 
         // Execute the requested method
-        $instance->$method($request);
+        $modelAndView = $instance->$method($request);
+
+        if ($modelAndView == null || !($modelAndView instanceof ModelAndView)) {
+            throw new Exception('No ModelAndView given');
+        }
+
+        $this->renderView($modelAndView);
+    }
+
+    protected function renderView(ModelAndView $modelAndView)
+    {
+        include realpath(dirname(__FILE__)) . '/../view/'.$modelAndView->getView().'.php';
     }
 
     /**

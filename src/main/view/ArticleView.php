@@ -6,18 +6,18 @@
 <body>
 
 <div class="container">
-    <?php if ($article != null) : ?>
+    <?php if ($modelAndView->article != null) : ?>
     <div class="article">
-        <h1><?php echo $article->getTitle(); ?></h1>
+        <h1><?php echo $modelAndView->article->getTitle(); ?></h1>
 
-        <div class="intro">Door <?php echo $article->getAuthor(); ?>, op <?php echo $article->getCreatedAt(); ?></div>
-        <div class="text"><?php echo $article->getText(); ?></div>
+        <div class="intro">Door <?php echo $modelAndView->article->getAuthor(); ?>, op <?php echo $modelAndView->article->getCreatedAt(); ?></div>
+        <div class="text"><?php echo $modelAndView->article->getText(); ?></div>
     </div>
 
     <div class="comments">
-        <?php if ($article->hasComments()) : ?>
+        <?php if ($modelAndView->article->hasComments()) : ?>
         <form action="index.php" method="get">
-            <input type="hidden" name="articleId" value="<?php echo $article->getId(); ?>" />
+            <input type="hidden" name="articleId" value="<?php echo $modelAndView->article->getId(); ?>" />
             <select name="order">
                 <option value="desc">Nieuwste eerst</option>
                 <option value="asc">Oudste eerst</option>
@@ -32,7 +32,7 @@
             <input type="submit" value="Sortering aanpassen">
         </form>
 
-        <?php foreach ($article->getComments() as $comment) : ?>
+        <?php foreach ($modelAndView->article->getComments() as $comment) : ?>
             <?php renderComment($comment); ?>
             <?php endforeach; ?>
         <?php endif; ?>
@@ -43,7 +43,7 @@
 
     <div>
         <form action="/addcommentsave.php" method="post">
-            <input type="hidden" name="articleId" id="articleId" value="<?php echo $article->getId(); ?>">
+            <input type="hidden" name="articleId" id="articleId" value="<?php echo $modelAndView->article->getId(); ?>">
 
             <label for="user">Gebruikersnaam: </label>
             <input type="text" name="user" id="user"><br/>

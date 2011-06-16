@@ -2,6 +2,7 @@
 
 require_once realpath(dirname(__FILE__)) . '/../service/ArticleService.php';
 require_once realpath(dirname(__FILE__)) . '/../service/CommentService.php';
+require_once realpath(dirname(__FILE__)) . '/../helper/ModelAndView.php';
 
 class ArticleController {
 
@@ -14,6 +15,8 @@ class ArticleController {
      */
     public function executeViewArticle(Request $request)
     {
+        $modelAndView = new ModelAndView('ArticleView');
+
         $articleId = $request->getGetParameter('articleId');
         if (!$articleId) {
             throw new Exception('No article id given');
@@ -28,7 +31,10 @@ class ArticleController {
         if (!$article) {
             throw new Exception('No article found with id: ' . $articleId);
         }
-        include realpath(dirname(__FILE__)) . '/../view/ArticleView.php';
+
+        $modelAndView->addModel('article', $article);
+
+        return $modelAndView;
     }
 
     /**
@@ -39,6 +45,8 @@ class ArticleController {
      * @return void
      */
     public function executeAddComment(Request $request) {
+        $modelAndView = new ModelAndView('AddCommentView');
+
         $articleId = $request->getGetParameter('articleId');
         if (!$articleId) {
             throw new Exception('No article id given');
@@ -61,8 +69,11 @@ class ArticleController {
                 throw new Exception('No comment found with id: ' . $parentId);
             }
         }
-        
-        include realpath(dirname(__FILE__)) . '/../view/AddCommentView.php';
+
+        $modelAndView->addModel('articleId', $articleId);
+        $modelAndView->addModel('parentId', $parentId);
+
+        return $modelAndView;
     }
 
     /**
@@ -109,7 +120,7 @@ class ArticleController {
         $commentService->addComment($articleId, $user, $text, $parentId);
 
         $request->addGetParameter('articleId', $articleId);
-        $this->executeViewArticle($request);
+        return $this->executeViewArticle($request);
     }
 
     /**
@@ -157,6 +168,6 @@ class ArticleController {
         $commentService->rateComment($comment, $score);
 
         $request->addGetParameter('articleId', $articleId);
-        $this->executeViewArticle($request);
+        return $this->executeViewArticle($request);
     }
 }
