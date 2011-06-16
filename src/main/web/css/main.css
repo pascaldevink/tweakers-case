@@ -1,0 +1,18 @@
+.comment-header {
+    border:  1px solid #000;
+}
+.inner-comment {
+    margin-left: 40px;
+}
+.comment {
+    margin-top: 10px;
+}
+.comment form {
+    display: inline;
+}
+label {
+    width: 150px;
+    display: inline-block;
+    margin-bottom: 5px;
+    vertical-align: top;
+}
