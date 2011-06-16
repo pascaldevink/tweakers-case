@@ -13,9 +13,11 @@ class Comment
     private $comments;
     private $level;
 
+    private $userData;
+
     /**
      * Returns whether this comment has a parent, or is a root comment.
-     * 
+     *
      * @return bool
      */
     public function hasParent()
@@ -26,7 +28,7 @@ class Comment
 
     /**
      * Order the child comments by $order.
-     * 
+     *
      * @param  $order
      * @return array
      */
@@ -34,7 +36,8 @@ class Comment
     {
         if ($this->comments && count($this->comments) > 0) {
             if ($order == 'asc') {
-                uasort($this->comments, function(Comment $a, Comment $b) {
+                uasort($this->comments, function(Comment $a, Comment $b)
+                    {
                         if ($a->getCreatedAt() == $b->getCreatedAt()) {
                             return 0;
                         }
@@ -43,7 +46,8 @@ class Comment
                     });
             }
             else {
-                uasort($this->comments, function(Comment $a, Comment $b) {
+                uasort($this->comments, function(Comment $a, Comment $b)
+                    {
                         if ($a->getCreatedAt() == $b->getCreatedAt()) {
                             return 0;
                         }
@@ -68,20 +72,21 @@ class Comment
      */
     public function filterComments($minScore)
     {
-        $comments = array_filter($this->comments, function(Comment $comment) use ($minScore) {
+        $comments = array_filter($this->comments, function(Comment $comment) use ($minScore)
+            {
                 if ($comment->hasComments()) {
                     $comment->filterComments($minScore);
                 }
                 return $comment->getAverageScore() >= $minScore;
             });
         $this->comments = $comments;
-        
+
         return $comments;
     }
 
     /**
      * Returns whether the provided comment Id is in the comment tree.
-     * 
+     *
      * @param  $commentId
      * @return bool
      */
@@ -90,24 +95,27 @@ class Comment
         if ($this->comments == null || !is_array($this->comments)) {
             return false;
         }
-        
-        $userData['hasChildComment'] = false;
-        $userData['commentId'] = $commentId;
 
-        array_walk($this->comments, function($item, $key, $userData)
-            {
-                if (!$userData['hasChildComment'] == true) {
-                    if ($item->getId() == $userData['commentId']) {
-                        $userData['hasChildComment'] = true;
-                    }
-                    else if ($item->hasComment($userData['commentId'])) {
-                        $userData['hasChildComment'] = true;
-                    }
-                }
-            }, &$userData);
+        $this->userData['hasChildComment'] = false;
+        $this->userData['commentId'] = $commentId;
 
-        return $userData['hasChildComment'];
+        array_walk($this->comments, 'Comment::arrayWalkFunction');
+
+        return $this->userData['hasChildComment'];
     }
+
+    private function arrayWalkFunction($item, $key)
+    {
+        if (!$this->userData['hasChildComment'] == true) {
+            if ($item->getId() == $this->userData['commentId']) {
+                $this->userData['hasChildComment'] = true;
+            }
+            else if ($item->hasComment($this->userData['commentId'])) {
+                $this->userData['hasChildComment'] = true;
+            }
+        }
+    }
+
 
     /**
      * Add $comment to one of the children, provided that the parent exists in the current comment tree.
