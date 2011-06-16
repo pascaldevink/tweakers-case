@@ -25,9 +25,7 @@ class ArticleService
     {
         // Get article from database
         $sql = 'SELECT article.article_id,article.author,article.title,article.text,article.created_at,comment.comment_id,comment.parent_id,comment.user,comment.text as comment_text,comment.average_score,comment.created_at as comment_created_at FROM article LEFT JOIN comment ON article.article_id = comment.article_id WHERE article.article_id = :articleId';
-        $con = new PDO('mysql:host=' . Configuration::DATABASE_HOST . ';dbname=' . Configuration::DATABASE_NAME,
-            Configuration::DATABASE_USER,
-            Configuration::DATABASE_PASS);
+        $con = Configuration::getConnection();
         $statement = $con->prepare($sql);
         $statement->bindValue(':articleId', $articleId, PDO::PARAM_INT);
         $statement->execute();

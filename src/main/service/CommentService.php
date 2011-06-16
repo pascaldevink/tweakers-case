@@ -12,9 +12,7 @@ class CommentService
     public function getComment($commentId)
     {
         $sql = 'SELECT comment.comment_id,comment.article_id,comment.parent_id,comment.user,comment.text as comment_text,comment.average_score,comment.created_at as comment_created_at FROM comment WHERE comment.comment_id = :commentId';
-        $con = new PDO('mysql:host=' . Configuration::DATABASE_HOST . ';dbname=' . Configuration::DATABASE_NAME,
-            Configuration::DATABASE_USER,
-            Configuration::DATABASE_PASS);
+        $con = Configuration::getConnection();
         $statement = $con->prepare($sql);
         $statement->bindValue(':commentId', $commentId, PDO::PARAM_INT);
         $statement->execute();
@@ -48,9 +46,7 @@ class CommentService
     public function addComment($articleId, $user, $text, $parentId = null)
     {
         $sql = 'INSERT INTO comment (article_id, parent_id, user, text, average_score, created_at) VALUES (:articleId, :parentId, :user, :text, :averageScore, :createdAt)';
-        $con = new PDO('mysql:host=' . Configuration::DATABASE_HOST . ';dbname=' . Configuration::DATABASE_NAME,
-            Configuration::DATABASE_USER,
-            Configuration::DATABASE_PASS);
+        $con = Configuration::getConnection();
         $statement = $con->prepare($sql);
         $statement->bindValue(':articleId', $articleId, PDO::PARAM_INT);
         $statement->bindValue(':parentId', $parentId, PDO::PARAM_INT);
@@ -72,9 +68,7 @@ class CommentService
      * @return bool
      */
     public function rateComment(Comment $comment, $score) {
-        $con = new PDO('mysql:host=' . Configuration::DATABASE_HOST . ';dbname=' . Configuration::DATABASE_NAME,
-            Configuration::DATABASE_USER,
-            Configuration::DATABASE_PASS);
+        $con = Configuration::getConnection();
         
         $sql = 'INSERT INTO score (comment_id, score) VALUES (:commentId, :score)';
         $statement = $con->prepare($sql);
